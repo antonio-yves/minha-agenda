@@ -1,0 +1,75 @@
+<!DOCTYPE html>{% load static %} {% load widget_tweaks %}
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Agenda - Cadastre-se</title>
+    <link rel="shortcut icon" href="{% static 'img/favico.ico' %}" type="image/x-icon">
+
+    <!-- Static files -->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/login.css' %}" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <main class="login-form m-auto">
+        <div class="left me-3">
+            <img class="img-login" src="{% static 'img/calendario_login.svg' %}" alt="" srcset="">
+        </div>
+        <div class="right w-40 me-3">
+            <div class="card">
+                <div class="card-header text-bg-light">
+                    <h5 class="card-title text-center fw-bold">Cadastre-se</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post"> {% csrf_token %}
+                        <div class="row">
+                            {% if form.non_field_errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ form.non_field_errors|striptags }}
+                            </div>
+                            {% endif %}
+                            <div class="mb-3 col-md-6">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">{{ form.first_name.label }}</label>
+                                {{ form.first_name|add_class:'form-control' }}
+                                {% if form.errors.first_name %}
+                                <span id="first_name_error" class="form-text text-danger">{{ form.first_name.errors|striptags }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">{{ form.last_name.label }}</label>
+                                {{ form.last_name|add_class:'form-control' }}
+                                {% if form.errors.last_name %}
+                                <span id="last_name_error" class="form-text text-danger">{{ form.last_name.errors|striptags }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.username.id_for_label }}" class="form-label">{{ form.username.label }}</label>
+                                {{ form.username|add_class:'form-control' }}
+                                <span id="username_help_text" class="form-text">Letras, números e @/./+/-/_ apenas.</span>
+                                {% if form.errors.username %}
+                                <div>
+                                    <span id="username_error" class="form-text text-danger fw-semibold">{{ form.username.errors|striptags }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <label for="{{ form.password.id_for_label }}" class="form-label">{{ form.password.label }}</label>
+                                {{ form.password|add_class:'form-control' }}
+                                {% if form.errors.password %}
+                                <span id="username_error" class="form-text text-danger">{{ form.password.errors|striptags }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                <a href="{% url 'app.core:cadastro' %}" class="align-middle text-danger link fw-semibold">Já tem uma conta? Faça login!</a>
+                                <button type="submit" class="btn btn-outline-success float-end">Cadastre-se <i class="fa-solid fa-arrow-right ms-1"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

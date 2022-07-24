@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title">Exportação de Dados</h5>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-primary" role="alert">
+            Nessa tela é possível realizar a exportação dos seus compromissos para um arquivo CSV ou Excel.
+        </div>
+        <form method="post" id="form"> {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_tipo_arquivo" class="form-label">Selecione o tipo de arquivo para iniciar a exportação</label>
+                <select class="form-select" aria-label="Tipo de arquivo" id="id_tipo_arquivo" name="tipo_arquivo" required>
+                    <option value="">---</option>
+                    <option value="1">CSV</option>
+                    <option value="2">Excel</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-outline-success float-end">
+                    <i class="fa-solid fa-file-export me-1"></i> Exportar dados
+                </button>
+                <button id="btnCancelar" type="button" class="btn btn-outline-danger float-end me-2"><i class="fas fa-times me-1"></i> Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+    var btnCancelar = document.getElementById('btnCancelar');
+
+    btnCancelar.addEventListener("click", () => {
+        window.open("{% url 'app.agenda:home' %}", "_self");
+    });
+</script>
+{% endblock %}

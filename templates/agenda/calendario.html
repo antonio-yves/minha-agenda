@@ -1,0 +1,98 @@
+{% extends 'base.html' %} {% load static %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <form method="get">
+            <div class="row">
+                <div class="mb-1 col-md-4">
+                    <label for="id_nome_compromisso" class="form-label">Nome do compromisso</label>
+                    <input type="text" class="form-control form-control-sm" id="id_nome_compromisso" name="nome_compromisso">
+                </div>
+                <div class="mb-1 col-md-2">
+                    <label for="id_data_inicial" class="form-label">Data inicial</label>
+                    <input type="date" class="form-control form-control-sm" id="id_data_inicial" name="data_inicial">
+                </div>
+                <div class="mb-1 col-md-2">
+                    <label for="id_data_final" class="form-label">Data final</label>
+                    <input type="date" class="form-control form-control-sm" id="id_data_final" name="data_final">
+                </div>
+                <div class="mb-1 col-md-2">
+                    <label for="id_hora_inicial" class="form-label">Hora inicial</label>
+                    <input type="time" class="form-control form-control-sm" id="id_hora_inicial" name="hora_inicial">
+                </div>
+                <div class="mb-1 col-md-2">
+                    <label for="id_hora_final" class="form-label">Hora final</label>
+                    <input type="time" class="form-control form-control-sm" id="id_hora_final" name="hora_final">
+                </div>
+                <div class="mb-1 col-md-4">
+                    <label for="id_local" class="form-label">Local</label>
+                    <input type="text" class="form-control form-control-sm" id="id_local" name="local">
+                </div>
+                <div class="mb-1 col-md-4">
+                    <label for="id_status_compromisso" class="form-label">Status do compromisso</label>
+                    <select class="form-select form-select-sm" id="id_status_compromisso" name="status_compromisso">
+                        <option value="">---</option>
+                        <option value="A">Agendado</option>
+                        <option value="C">Cancelado</option>
+                        <option value="R">Realizado</option>
+                    </select>
+                </div>
+                <div class="mb-1 col-md-2 d-flex flex-column">
+                    <div class="mt-auto">
+                        <button type="submit" class="btn btn-outline-primary btn-sm">Filtrar <i class="fa-solid fa-filter mr-1"></i></button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-body">
+        <div id="calendario"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'plugins/fullcalendar/js/main.js' %}" type="text/javascript"></script>
+<script src="{% static 'plugins/fullcalendar/js/pt-br.js' %}" type="text/javascript"></script>
+
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', () => {
+        var calendarioElement = document.getElementById('calendario');
+
+        var calendario = new FullCalendar.Calendar(calendarioElement, {
+            themeSystem: 'bootstrap5',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,listYear',
+            },
+            initialView: 'listYear',
+            initialDate: new Date(),
+            locale: 'pt-br',
+            navLinks: true,
+            editable: false,
+            dayMaxEvents: true,
+            selectable: true,
+            events: [
+                {% for object in object_list %}
+                {
+                    "title": "{{ object.nome_compromisso }}",
+                    "start": "{{ object.data|date:'Y-m-d' }}" + "T" + "{{ object.hora_inicio|time:'H:i:s' }}",
+                    "end": "{{ object.data|date:'Y-m-d' }}" + "T" + "{{ object.hora_termino|time:'H:i:s' }}",
+                    "url": "{% url 'app.agenda:detalhes_compromisso' object.pk %}",
+                    "backgroundColor": {% if object.status_compromisso == 'A' %}"#2980b9"{% elif object.status_compromisso == 'C' %}"#e74c3c"{% else %}"#27ae60"{% endif %},
+                },
+                {% endfor %}
+            ],
+            eventTimeFormat: {
+                hour: '2-digit',
+                minute: '2-digit',
+                meridiem: false
+            }
+        });
+
+        calendario.render();
+    });
+</script>
+{% endblock %}
