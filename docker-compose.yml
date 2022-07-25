@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+    expose:
+      - 8000
+    env_file:
+      - ./.env
+    depends_on:
+      - migration
+      - db
+
+  db:
+    image: postgres:13.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgres/data/
+    env_file:
+      - ./.env
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+    ports:
+      - 80:80
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:
+  static_volume:
